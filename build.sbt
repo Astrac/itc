@@ -20,6 +20,11 @@ lazy val commonSettings = List(
   ),
 )
 
+lazy val commonJsSettings = List(
+  scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
+  scalaJSUseMainModuleInitializer := false,
+)
+
 lazy val catsEffectVersion = "3.4.10"
 lazy val catsVersion = "2.9.0"
 lazy val drosteVersion = "0.9.0"
@@ -48,6 +53,7 @@ lazy val `itc-core` = crossProject(JSPlatform, JVMPlatform)
     ),
   )
   .settings(commonSettings)
+  .jsSettings(commonJsSettings)
 
 lazy val `itc-simulator` = crossProject(JSPlatform, JVMPlatform)
   .in(file("modules/simulator"))
@@ -57,8 +63,8 @@ lazy val `itc-simulator` = crossProject(JSPlatform, JVMPlatform)
     description := "Simulator for a network using the ITC Fork-Event-Join model",
   )
   .dependsOn(`itc-core` % "compile->compile;test->test")
+  .jsSettings(commonJsSettings)
   .jsSettings(
-    scalaJSUseMainModuleInitializer := true,
     libraryDependencies ++= Seq(
       ("org.scala-js" %%% "scalajs-java-securerandom" % "1.0.0")
         .cross(CrossVersion.for3Use2_13),

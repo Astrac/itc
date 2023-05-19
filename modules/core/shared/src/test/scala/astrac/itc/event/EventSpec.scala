@@ -8,9 +8,7 @@ import org.scalacheck.Prop
 
 import astrac.itc.event.syntax.*
 import astrac.itc.identity.syntax.*
-import astrac.itc.Gens.eventGen
-import astrac.itc.Gens.identityGen
-import astrac.itc.Gens.longGen
+import astrac.itc.Gens.*
 
 class EventSpec extends ScalaCheckSuite:
 
@@ -162,6 +160,14 @@ class EventSpec extends ScalaCheckSuite:
     assertEquals(event.fill(itcId"[0, 1]"), itcEv"[150, [0, 100, 0], 100]")
     assertEquals(event.fill(itcId"[1, 0]"), itcEv"[200, 50, [0, 0, 50]]")
     assertEquals(event.fill(itcId"[1, [1, 0]]"), itcEv"250")
+  }
+
+  test(
+    "If an event has max that is less than another event the former will be strictly less than the latter",
+  ) {
+    Prop.forAll(
+      Gen.zip(eventGen, eventGen).suchThat((ev1, ev2) => ev1.max < ev2.min),
+    )((ev1, ev2) => assert(ev1.isStrictlyLess(ev2)))
   }
 
   test("Growing an event with an identity") {

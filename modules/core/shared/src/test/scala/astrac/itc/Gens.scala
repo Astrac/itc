@@ -15,7 +15,7 @@ object Gens:
 
   def eventGen: Gen[Event] =
     for
-      isLeaf <- Gen.choose(0, 100).map(_ > 0)
+      isLeaf <- Gen.choose(0, 100).map(_ > 40)
       tree <- if isLeaf then eventLeafGen else eventNodeGen
     yield tree
 
